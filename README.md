@@ -3,3 +3,7 @@ Rating plugin for my personal **ghostmode** plugin with the ability to view a li
 
 ## Commands
 !stat
+
+## Require
+- SM1.11(tested)
+- Ghostmode(private)
