@@ -1,0 +1,2 @@
+# Ghostmode-Rating
+Ghostmode Rating
