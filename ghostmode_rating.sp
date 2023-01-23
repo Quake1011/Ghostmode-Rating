@@ -20,11 +20,9 @@ int currenttype[MAXPLAYERS+1];
 public void OnPluginStart()
 {
 	Database.Connect(SQLConnectCB, "ghostmode");
-
 	HookEvent("player_death", EventPlayerDeath, EventHookMode_Post);
 	RegConsoleCmd("sm_stat", CMDRating);
 	LoadTranslations("ghostmode_rating.phrases.txt");
-	
 	Rating = CreateArray(256);
 	Scores = CreateArray(256);
 }
@@ -35,7 +33,6 @@ public void SQLConnectCB(Database hdb, const char[] error, any data)
 	{
 		db = hdb;
 		LogMessage("Ghost rating successfully connected");
-		
 		CreateTable();
 	}
 	else LogMessage("Connecting rating: %s", error);
@@ -70,19 +67,14 @@ void OpenRatingMenu(int client)
 {
 	char buffer[256];
 	Menu hMenu = CreateMenu(RatingHandler);
-	
 	Format(buffer, sizeof(buffer), "%t", "RatingTitle");
 	hMenu.SetTitle(buffer);
-	
 	Format(buffer, sizeof(buffer), "%t", "GhostTOP");
 	hMenu.AddItem("gh", buffer);
-	
 	Format(buffer, sizeof(buffer), "%t", "CtsTOP");
 	hMenu.AddItem("ct", buffer);
-	
 	hMenu.ExitBackButton = true;
 	hMenu.ExitButton = true;
-	
 	hMenu.Display(client, 0);
 }
 
@@ -129,7 +121,6 @@ public void SQLGetTOPToArray(Database hdb, DBResultSet results, const char[] err
 		{
 			Rating.Clear();
 			Scores.Clear();
-			
 			for(int i = 0; i < results.RowCount; i++)
 			{
 				results.FetchRow();
@@ -160,7 +151,6 @@ void OpenTopToMenu(int client, int type)
 		Format(aadata[i], sizeof(aadata[]), "#%d. %s [%i]", i+1, buffer, Scores.Get(i));
 		TrimString(aadata[i]);
 	}
-
 	Panel hPanel = CreatePanel(INVALID_HANDLE);
 	switch(type)
 	{
@@ -168,7 +158,6 @@ void OpenTopToMenu(int client, int type)
 		case 3: Format(buffer, sizeof(buffer), "%t", "CtsTOP");
 	}
 	hPanel.SetTitle(buffer);
-	
 	hPanel.DrawItem(" ", ITEMDRAW_SPACER|ITEMDRAW_RAWLINE);
 	hPanel.DrawText("-----------------------------");
 	hPanel.DrawItem(" ", ITEMDRAW_SPACER|ITEMDRAW_RAWLINE);
@@ -176,11 +165,10 @@ void OpenTopToMenu(int client, int type)
 	int i = iMenuPos[client] * 10;
 	int start = i;
 	int end = i + 9;
+	
 	if(end > iMax) end = iMax;
-	for(int k = i; k <= end; k++) 
-	{
-		hPanel.DrawText(aadata[k]);
-	}
+	
+	for(int k = i; k <= end; k++) hPanel.DrawText(aadata[k]);
 	
 	hPanel.DrawItem(" ", ITEMDRAW_SPACER|ITEMDRAW_RAWLINE);
 	hPanel.DrawText("-----------------------------");
@@ -192,7 +180,6 @@ void OpenTopToMenu(int client, int type)
 		FormatEx(buffer, sizeof(buffer), "<== (%d - %d)", start - 9, start);
 		hPanel.DrawItem(buffer);
 	}
-
 	if(end < iMax-1)
 	{
 		i = end + 11;
@@ -201,17 +188,12 @@ void OpenTopToMenu(int client, int type)
 		FormatEx(buffer, sizeof(buffer), "==> (%d - %d)", end + 2, i);
 		hPanel.DrawItem(buffer);
 	}
-	
 	hPanel.DrawItem(" ", ITEMDRAW_SPACER|ITEMDRAW_RAWLINE);	
-
 	hPanel.CurrentKey = 8;
 	hPanel.DrawItem("Назад");
-
 	hPanel.CurrentKey = 9;
 	hPanel.DrawItem("Выход");
-
 	hPanel.Send(client, PanelHandler, 30);
-	
 	currenttype[client] = type;
 	delete hPanel;
 }
@@ -235,10 +217,7 @@ public int PanelHandler(Menu menu, MenuAction action, int client, int item)
 			iMenuPos[client] = 0;
 			OpenRatingMenu(client);
 		}
-		case 9: 
-		{
-			iMenuPos[client] = 0;
-		}
+		case 9: iMenuPos[client] = 0;
 	}
 	return 0;
 }
